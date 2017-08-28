@@ -1,0 +1,41 @@
+.category-section {
+    display: flex;
+    flex-wrap: wrap;
+    width: 95%;
+    margin: auto;
+}
+
+.category {
+    width: 100%;
+    margin: auto;
+}
+
+.category-figure {
+    width: 100%;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.category-picture {
+    width: 30%;
+}
+
+.category-caption{
+    width: 70%;
+}
+
+@media screen and (min-width: 750px) {
+
+    .category {
+        width: 30%;
+    }
+
+    .category-picture {
+        width: 100%;
+    }
+
+    .category-caption{
+        width: 100%;
+    }
+}
