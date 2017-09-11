@@ -3,33 +3,168 @@
     border: 1px solid red;
 }
 
+body {
+    background-color: #ccc;
+}
+
+/*Make a universal cards class that gives card appearance*/
+.cards {
+    border: 2px solid #e0e0e0;
+    border-radius: 2px;
+    box-shadow: 4px 4px 8px #9e9e9e;
+    background-color: #eee;
+}
+
 .main-header {
     width: 95%;
     display: flex;
     flex-wrap: wrap;
-    margin: auto;
+    margin: 10px auto;
+    border: 2px solid #e0e0e0;
+    border-radius: 2px;
+    box-shadow: 4px 4px 8px #9e9e9e;
+    background-color: #eee;
+    align-items: center;
 }
 
 #page-heading {
     width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.main-heading {
+    width: 90%;
+    margin: auto;
+    text-align: center;
+}
+
+.menu-button {
+    width: 10%;
+    text-align: center;
+}
+
+.glyphicon.glyphicon-menu-hamburger {
+    font-size: 25px;
 }
 
 #login-div {
-    width: 100%;
+    width: 0;
+    display: none;
+}
+
+.sidenav {
+    height: 100%;
+    /* 100% Full-height */
+    width: 0;
+    /* 0 width - change this with JavaScript */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Stay on top */
+    top: 0;
+    left: 0;
+    background-color: #444;
+    /* Black*/
+    overflow-x: hidden;
+    /* Disable horizontal scroll */
+    padding-top: 60px;
+    /* Place content 60px from the top */
+    transition: 0.5s;
+    /* 0.5 second transition effect to slide in the sidenav */
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 30px;
+    font-size: 36px;
+    margin-left: 50px;
+    color: white;
+}
+
+.closebtn {
+    text-decoration: none;
+    font-size: 50px;
+}
+
+.closebtn:hover {
+    text-decoration: none;
+}
+
+.menu-links:link {
+    text-decoration: none;
+    display: block;
+    font-size: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    color: white;
+}
+
+.menu-links:hover {
+    cursor: pointer;
+}
+
+.menu-links:visited {
+    text-decoration: none;
+    color: white;
+}
+
+
+.menu-links:active {
+    background-color: #fafafa;
+}
+
+/*This will be used to style all the buttons of the site*/
+
+.buttons {
+    /*Udacity blue*/
+    background-color: #0091ea;
+    color: #fafafa;
+    text-decoration: none;
+    border: 2px solid #0091ea;
+    border-radius: 2px;
+    box-shadow: 4px 4px 8px #9e9e9e;
+    padding: 3px;
+}
+
+.buttons:hover {
+    text-decoration: none;
+}
+
+.buttons:visited {
+    text-decoration: none;
 }
 
 .main-footer {
     width: 95%;
     margin: auto;
+    margin-top: 0.5%;
+    border: 2px solid #e0e0e0;
+    border-radius: 2px;
+    box-shadow: 4px 4px 8px #9e9e9e;
+    background-color: #eee;
 }
+
+/*Still need some minor breakpoints for font sizes and icon sizes*/
 
 @media screen and (min-width: 750px) {
     #page-heading {
-        width: 80%;
+        width: 90%;
     }
-
+    .main-heading {
+        text-align: left;
+    }
     #login-div {
-        width: 20%;
+        width: 10%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
     }
 
+    .glyphicon.glyphicon-menu-hamburger {
+        font-size: 30px;
+    }
 }
