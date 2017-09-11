@@ -8,52 +8,89 @@
         <meta name="mobile-web-app-capable" content="yes">
 
         <title>Category Items</title>
-        <link rel="stylesheet" href="../static/category-style.css">
+        <link rel="stylesheet" href="../static/catalog-style.css">
         <link rel="stylesheet" href="../static/main.css">
+
+        <!--Import to use glyphicons-->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+        <script src="../static/main.js"></script>
     </head>
 
     <body>
         <header class="main-header">
-            <div id="page-heading">Heading</div>
-            <div id="login-div">Login</div>
+            <!--Constant-->
+            <div id="page-heading">
+				<!--Burger menu icon. Placed inside div to be able to center icon-->
+				<div class="menu-button">
+					<span onclick="openNav()" class="glyphicon glyphicon-menu-hamburger"></span>
+				</div>
+				<!--Page heading-->
+				<h1 class="main-heading">Item Catalog</h1>
+			</div>
+            <!--If logged in, display message, else display login button-->
+            <div id="login-div">
+                <a href="" class="buttons">Login</a>
+            </div>
         </header>
 
-        <section class="category-items">
+        <section id="sideMenu" class="sidenav">
+			<!--&times creates an X for closing the menu-->
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <a href="#" class="menu-links">Login</a>
+            <a href="#" class="menu-links">View Catalog</a>
+            <a href="#" class="menu-links">Add category</a>
+            <a href="#" class="menu-links">Add item</a>
+            <a href="#" class="menu-links">About</a>
+            <a href="#" class="menu-links">Contact details</a>
+        </section>
+
+        <section id="main-body" class="category-section">
             <!--The divs will be placed in a for loop that loops through
                 categories in the database -->
-            <div class="item">
-                <figure class="item-figure">
-                    <picture class="item-picture">
-                        Picture1
-                    </picture>
+                <a href="#" class="category">
 
-                    <figcaption class="item-caption">
-                        Caption1
-                    </figcaption>
-                </figure>
-            </div>
-            <div class="item">
-                <figure class="item-figure">
-                    <picture class="item-picture">
-                        Picture1
-                    </picture>
+                    <figure class="category-figure">
+                        <!--Picture and captions will change-->
+                        <picture class="category-picture">
+                            <!--Alt needs to have {{}}-->
+                            <img class="category-poster" src="http://cdn3-www.dogtime.com/assets/uploads/gallery/30-impossibly-cute-puppies/impossibly-cute-puppy-21.jpg" alt="">
+                        </picture>
 
-                    <figcaption class="item-caption">
-                        Caption1
-                    </figcaption>
-                </figure>
-            </div>
-            <div class="item">
-                <figure class="item-figure">
-                    <picture class="item-picture">
-                        Picture1
-                    </picture>
+                        <figcaption class="category-caption">
+                            <p class="category-name">Puppy 1</p>
+                        </figcaption>
+                    </figure>
 
-                    <figcaption class="item-caption">
-                        Caption1
-                    </figcaption>
-                </figure>
-            </div>
+                </a>
+
+                <a href="#" class="category">
+                    <figure class="category-figure">
+                        <!--Picture and captions will change-->
+                        <picture class="category-picture">
+                            <!--Alt needs to have {{}}-->
+                            <img class="category-poster" src="http://cdn3-www.dogtime.com/assets/uploads/gallery/30-impossibly-cute-puppies/impossibly-cute-puppy-21.jpg" alt="">
+                        </picture>
+
+                        <figcaption class="category-caption">
+                            <p class="category-name">Puppy 1</p>
+                        </figcaption>
+                    </figure>
+                </a>
+
+                <a href="#" class="category">
+                    <figure class="category-figure">
+                        <!--Picture and captions will change-->
+                        <picture class="category-picture">
+                            <!--Alt needs to have {{}}-->
+                            <img class="category-poster" src="http://cdn3-www.dogtime.com/assets/uploads/gallery/30-impossibly-cute-puppies/impossibly-cute-puppy-21.jpg" alt="">
+                        </picture>
+
+                        <figcaption class="category-caption">
+                            <p class="category-name">Puppy 1</p>
+                        </figcaption>
+                    </figure>
+                </a>
         </section>
 
         <footer class="main-footer">
