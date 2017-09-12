@@ -1,0 +1,71 @@
+.add-item {
+    width: 95%;
+    margin: auto;
+    text-align: center;
+}
+
+.add-form {
+    text-align: center;
+}
+
+input {
+    border: 1px solid black;
+    border-radius: 4px;
+    padding: 5px 10px;
+    width: 90%;
+    display: inline-block;
+    /*margin: 20px 0;*/
+}
+
+textarea {
+    height: 150px;
+    resize: none;
+    border: 1px solid black;
+    border-radius: 4px;
+    padding: 5px 10px;
+    width: 90%;
+    /*margin: 20px 0;*/
+    display: inline-block;
+}
+
+select {
+    width: 90%;
+    border: 1px solid black;
+    border-radius: 4px;
+    padding: 5px 10px;
+    text-align: center;
+    display: inline-block;
+    /*margin: 20px 0;*/
+}
+
+.cancel-button {
+    margin: 5px auto;
+}
+
+.cancel {
+    width: 90%;
+    display: inline-block;
+}
+
+@media screen and (min-width: 750px) {
+    input {
+        width: 50%;
+    }
+
+    textarea {
+        width: 50%;
+    }
+    select {
+        width: 50%;
+        border: 1px solid black;
+        border-radius: 4px;
+        padding: 5px 10px;
+        text-align: center;
+
+    }
+
+    .cancel {
+        width: 50%;
+
+    }
+}
