@@ -1,0 +1,19 @@
+.delete-item {
+    width: 95%;
+    margin: auto;
+    text-align: center;
+}
+
+h4 {
+    text-align: center;
+}
+
+input {
+    display: inline-block;
+    margin: 5px auto !important;
+}
+
+a {
+    display: inline-block;
+    margin: 5px auto !important;
+}
