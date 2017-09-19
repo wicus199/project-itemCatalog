@@ -7,14 +7,14 @@
         <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
         <meta name="mobile-web-app-capable" content="yes">
 
-        <title>Item</title>
-        <link rel="stylesheet" href="../static/items-style.css">
-        <link rel="stylesheet" href="../static/main.css">
+        <title>{{item.name}}</title>
+        <link rel="stylesheet" href="{{url_for('static', filename='items-style.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename='main.css')}}">
 
         <!--Import to use glyphicons-->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-        <script src="../static/main.js"></script>
+        <script src="{{url_for('static', filename='main.js')}}"></script>
     </head>
 
     <body>
@@ -26,7 +26,7 @@
 					<span onclick="openNav()" class="glyphicon glyphicon-menu-hamburger"></span>
 				</div>
 				<!--Page heading-->
-				<h1 class="main-heading">Item Catalog</h1>
+				<h1 class="main-heading">{{item.name}}</h1>
 			</div>
             <!--If logged in, display message, else display login button-->
             <div id="login-div">
@@ -38,7 +38,7 @@
 			<!--&times creates an X for closing the menu-->
             <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
             <a href="#" class="menu-links">Login</a>
-            <a href="#" class="menu-links">View Catalog</a>
+            <a href="{{url_for('catalog')}}" class="menu-links">View Catalog</a>
             <a href="#" class="menu-links">Add category</a>
             <a href="#" class="menu-links">Add item</a>
             <a href="#" class="menu-links">About</a>
@@ -49,15 +49,15 @@
             <div class="cards item">
                 <figure class="item-figure">
                     <picture class="item-image">
-                        <img class="item-picture" src="http://cdn3-www.dogtime.com/assets/uploads/gallery/30-impossibly-cute-puppies/impossibly-cute-puppy-21.jpg" alt="">
+                        <img class="item-picture" src="{{item.url}}" alt="">
                     </picture>
                     <figcaption class="item-caption">
-                        Item caption
+                        {{item.name}}
                     </figcaption>
                 </figure>
 
                 <div class="item-description">
-                    <p class="description">Item description</p>
+                    <p class="description">{{item.description}}</p>
                 </div>
             </div>
 
