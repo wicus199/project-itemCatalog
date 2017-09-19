@@ -16,6 +16,7 @@ class Category(Base):
     # Mappers
     name = Column(String(30), nullable=False)                   # Category name
     description = Column(String(250), nullable=False)           # Category description
+    url = Column(String(250), nullable=True)                    # Category image url
     id = Column(Integer, primary_key=True)                      # Category id
 
 class Item(Base):
@@ -23,7 +24,7 @@ class Item(Base):
     __tablename__ = 'item'
     name = Column(String(30), nullable=False)                   # Item name
     description = Column(String(250), nullable=False)           # Item description
-    url = Column(String(150), nullable=True)                    # Item picture URL, no picture needed
+    url = Column(String(250), nullable=True)                    # Item picture URL, no picture needed
     id = Column(Integer, primary_key = True)
     category_id = Column(Integer, ForeignKey('category.id'))
 
