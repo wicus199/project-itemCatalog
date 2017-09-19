@@ -37,7 +37,7 @@
 			<!--&times creates an X for closing the menu-->
             <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
             <a href="#" class="menu-links">Login</a>
-            <a href="#" class="menu-links">View Catalog</a>
+            <a href="{{url_for('catalog')}}" class="menu-links">View Catalog</a>
             <a href="#" class="menu-links">Add category</a>
             <a href="#" class="menu-links">Add item</a>
             <a href="#" class="menu-links">About</a>
@@ -50,49 +50,23 @@
             <!--The divs will be placed in a for loop that loops through
                 categories in the database -->
             <!--Variable length-->
-            <a href="#" class="category">
-
+            {% for item in catalog_items %}
+            <a href="{{url_for('viewCategory', category_id=item.id)}}" class="category">
                 <figure class="category-figure">
                     <!--Picture and captions will change-->
                     <picture class="category-picture">
-                        <!--Alt needs to have {{}}-->
-                        <img class="category-poster" src="http://cdn3-www.dogtime.com/assets/uploads/gallery/30-impossibly-cute-puppies/impossibly-cute-puppy-21.jpg" alt="">
+                        <!--Alt needs to have -->
+                        <img class="category-poster" src="{{item.url}}" alt="">
                     </picture>
 
                     <figcaption class="category-caption">
-                        <p class="category-name">Puppy 1</p>
-                    </figcaption>
-                </figure>
-
-            </a>
-
-            <a href="#" class="category">
-                <figure class="category-figure">
-                    <!--Picture and captions will change-->
-                    <picture class="category-picture">
-                        <!--Alt needs to have {{}}-->
-                        <img class="category-poster" src="http://cdn3-www.dogtime.com/assets/uploads/gallery/30-impossibly-cute-puppies/impossibly-cute-puppy-21.jpg" alt="">
-                    </picture>
-
-                    <figcaption class="category-caption">
-                        <p class="category-name">Puppy 1</p>
+                        <p class="category-name">{{item.name}}</p>
                     </figcaption>
                 </figure>
             </a>
+            {% endfor %}
 
-            <a href="#" class="category">
-                <figure class="category-figure">
-                    <!--Picture and captions will change-->
-                    <picture class="category-picture">
-                        <!--Alt needs to have {{}}-->
-                        <img class="category-poster" src="http://cdn3-www.dogtime.com/assets/uploads/gallery/30-impossibly-cute-puppies/impossibly-cute-puppy-21.jpg" alt="">
-                    </picture>
 
-                    <figcaption class="category-caption">
-                        <p class="category-name">Puppy 1</p>
-                    </figcaption>
-                </figure>
-            </a>
 
 
 
