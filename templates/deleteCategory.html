@@ -47,7 +47,9 @@
 
         <section class="delete-item">
             <h4>Are you sure you want to delete category {{category.name}}?</h4>
-            <input type="submit" value="Delete" class="buttons"><br>
+            <form action="{{url_for('deleteCategory', category_id=category.id)}}" method="post">
+                <input type="submit" value="Delete" class="buttons"><br>
+            </form>
             <a href="{{url_for('viewCategory', category_id=category.id)}}" class="buttons">Cancel</a>
         </section>
 

@@ -61,7 +61,12 @@ def editCategory(category_id):
 @app.route('/catalog/<int:category_id>/delete/', methods=['GET','POST'])
 def deleteCategory(category_id):
     category = session.query(Category).filter_by(id=category_id).one()
-    return render_template('deleteCategory.html', category=category)
+    if request.method == 'POST':
+        session.delete(category)
+        session.commit()
+        return redirect(url_for('catalog'))
+    else:
+        return render_template('deleteCategory.html', category=category)
 
 # View an item -- Methods: GET
 @app.route('/catalog/<int:category_id>/item/<int:item_id>/')
