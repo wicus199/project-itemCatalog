@@ -64,11 +64,11 @@
             <!--This should have an if statement to either display login
                 message or edit and delete buttons -->
             <div class="action-buttons">
-                <a href="#" class="item-buttons buttons">
+                <a href="{{url_for('editItem', category_id=category.id, item_id=item.id)}}" class="item-buttons buttons">
                     Edit Item
                 </a>
 
-                <a href="#" class="item-buttons buttons">
+                <a href="{{url_for('deleteItem', category_id=category.id, item_id=item.id)}}" class="item-buttons buttons">
                     Delete Item
                 </a>
             </div>
