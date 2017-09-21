@@ -8,11 +8,12 @@
         <meta name="mobile-web-app-capable" content="yes">
 
         <title>{{category.name}}</title>
-        <link rel="stylesheet" href="{{url_for('static', filename='catalog-style.css')}}">
-        <link rel="stylesheet" href="{{url_for('static', filename='main.css')}}">
 
         <!--Import to use glyphicons-->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+        <link rel="stylesheet" href="{{url_for('static', filename='catalog-style.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename='main.css')}}">
 
         <script src="{{url_for('static', filename='main.js')}}"></script>
     </head>
@@ -63,6 +64,20 @@
                     </figure>
                 </a>
                 {% endfor %}
+        </section>
+
+        <section class="addSection">
+            <a href="{{url_for('addItem', category_id=category.id)}}" class="actionButton buttons">
+                Add Item
+            </a>
+
+            <a href="{{url_for('editCategory', category_id=category.id)}}" class="actionButton buttons">
+                Edit Category
+            </a>
+
+            <a href="{{url_for('deleteCategory', category_id=category.id)}}" class="actionButton buttons">
+                Delete Category
+            </a>
         </section>
 
         <footer class="main-footer">
