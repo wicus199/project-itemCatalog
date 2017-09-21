@@ -8,13 +8,14 @@
         <meta name="mobile-web-app-capable" content="yes">
 
         <title>Add item</title>
-        <link rel="stylesheet" href="../static/addItem-style.css">
-        <link rel="stylesheet" href="../static/main.css">
 
         <!--Import to use glyphicons-->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-        <script src="../static/main.js"></script>
+        <link rel="stylesheet" href="{{url_for('static', filename='addItem-style.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename='main.css')}}">
+
+        <script src="{{url_for('static', filename='main.js')}}"></script>
     </head>
 
     <body>
@@ -48,27 +49,30 @@
         <section class="add-item">
             <form class="add-form">
 
-                <label for="iName">Item Name</label>
+                <label for="iName">Item Name</label><br>
                 <input type="text" name="itemName" id="iName"><br>
 
-                <label for="iDescription">Item description:</label>
+                <label for="iDescription">Item description:</label><br>
                 <textarea type="text" name="description" id="iDescription"></textarea><br>
 
-                <label for="picUrl">Picture URL:</label>
+                <label for="picUrl">Picture URL:</label><br>
                 <input type="text" name="pic_url" id="picUrl"><br>
 
-                <label for="catSelect">Choose category:</label>
+                <label for="catSelect">Choose category:</label><br>
                 <select class="category-select" name="cat-name" id="catSelect">
                     <!--For loop to show all available categories-->
-                    <option value="snowb">Snowboards</option>
-                    <option value="pupp">Puppies</option>
-                    <option value="kittens">Kittens</option>
-                    <option value="bikes">Bikes</option>
+                    {% for cat in categories %}
+                        {% if cat.name == category.name %}
+                        <option selected value="{{cat.name}}_val">{{cat.name}}</option>
+                        {% else %}
+                        <option value="{{cat.name}}_val">{{cat.name}}</option>
+                        {% endif %}
+                    {% endfor %}
                 </select>
                 <input type="submit" value="Submit" class="buttons">
             </form>
             <div class="cancel-button">
-                <a href="#" class="buttons cancel">Cancel</a>
+                <a href="{{url_for('viewCategory',category_id=category.id)}}" class="buttons cancel">Cancel</a>
             </div>
         </section>
 
