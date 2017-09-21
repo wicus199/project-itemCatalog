@@ -47,7 +47,7 @@
         </section>
 
         <section class="add-item">
-            <form class="add-form">
+            <form class="add-form" action="{{url_for('addCategory')}}" method="post">
 
                 <label for="iName">Category Name</label><br>
                 <input type="text" name="itemName" id="iName"><br>
