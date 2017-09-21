@@ -52,6 +52,22 @@
     margin: auto;
 }
 
+.addSection {
+    width: 95%;
+    margin: auto;
+    text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.actionButton {
+    display: inline-block;
+    width: 20%;
+
+}
+
 @media screen and (min-width: 750px) {
 
     .category {
@@ -65,4 +81,5 @@
     .category-caption{
         width: 100%;
     }
+
 }

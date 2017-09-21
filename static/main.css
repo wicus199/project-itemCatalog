@@ -130,6 +130,10 @@ body {
     padding: 3px;
 }
 
+.addButton {
+    display: inline-block;
+}
+
 .buttons:hover {
     text-decoration: none;
 }
