@@ -55,7 +55,15 @@ def viewCategory(category_id):
 @app.route('/catalog/<int:category_id>/edit/', methods=['GET','POST'])
 def editCategory(category_id):
     category = session.query(Category).filter_by(id=category_id).one()
-    return render_template('editCategory.html', category=category)
+    if request.method == 'POST':
+        category.name = request.form['itemName']
+        category.description = request.form['description']
+        category.url = request.form['pic_url']
+        session.add(category)
+        session.commit()
+        return redirect(url_for('viewCategory', category_id=category.id))
+    else:
+        return render_template('editCategory.html', category=category)
 
 # Delete a category -- Methods: GET, POST
 @app.route('/catalog/<int:category_id>/delete/', methods=['GET','POST'])
