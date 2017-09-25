@@ -88,7 +88,20 @@ def viewItem(category_id, item_id):
 def addItem(category_id):
     categories = session.query(Category).all()
     category = session.query(Category).filter_by(id=category_id).one()
-    return render_template('addItem.html', category=category, categories=categories)
+    cat_id = request.form.get('cat-name')
+    if request.method == 'POST':
+        newItem = Item(
+            name = request.form['itemName'],
+            description = request.form['description'],
+            url = request.form['pic_url'],
+            category_id = int(cat_id)
+        )
+        session.add(newItem)
+        session.commit()
+        #return redirect(url_for('catalog'))
+        return redirect(url_for('viewCategory', category_id=int(cat_id)))
+    else:
+        return render_template('addItem.html', category=category, categories=categories)
 
 # Edit an item -- Methods: GET, POST
 @app.route('/catalog/<int:category_id>/item/<int:item_id>/edit/', methods=['GET','POST'])
