@@ -98,7 +98,7 @@ def addItem(category_id):
         )
         session.add(newItem)
         session.commit()
-        #return redirect(url_for('catalog'))
+        #returns to the page of the selected category of the new item
         return redirect(url_for('viewCategory', category_id=int(cat_id)))
     else:
         return render_template('addItem.html', category=category, categories=categories)
@@ -109,14 +109,31 @@ def editItem(category_id, item_id):
     categories = session.query(Category).all()
     category = session.query(Category).filter_by(id=category_id).one()
     item = session.query(Item).filter_by(id=item_id).one()
-    return render_template('editItem.html', categories=categories, category=category, item=item)
+
+    cat_id = request.form.get('cat-name')
+
+    if request.method == 'POST':
+        item.name = request.form['itemName']
+        item.description = request.form['description']
+        item.url = request.form['pic_url']
+        item.category_id = request.form.get('cat-name')    #request.form.get('')
+        session.add(item)
+        session.commit()
+        return redirect(url_for('viewItem', category_id=cat_id, item_id=item.id))
+    else:
+        return render_template('editItem.html', categories=categories, category=category, item=item)
 
 # Delete an item -- Methods: GET, POST
 @app.route('/catalog/<int:category_id>/item/<int:item_id>/delete/', methods=['GET','POST'])
 def deleteItem(category_id, item_id):
     category = session.query(Category).filter_by(id=category_id).one()
     item = session.query(Item).filter_by(id=item_id).one()
-    return render_template('deleteItem.html', category=category, item=item)
+    if request.method == 'POST':
+        session.delete(item)
+        session.commit()
+        return redirect(url_for('viewCategory', category_id=category.id))
+    else:
+        return render_template('deleteItem.html', category=category, item=item)
 
 if __name__ == '__main__':
     app.debug = True
