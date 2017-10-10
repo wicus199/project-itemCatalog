@@ -17,3 +17,9 @@ a {
     display: inline-block;
     margin: 5px auto !important;
 }
+
+.item-buttons {
+    font-size: 30px;
+    display: inline-block;
+    width: 150px;
+}

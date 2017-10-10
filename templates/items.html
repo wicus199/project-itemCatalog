@@ -15,67 +15,95 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
         <script src="{{url_for('static', filename='main.js')}}"></script>
+        <link href="https://fonts.googleapis.com/css?family=Pompiere" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Kranky" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Amatic+SC" rel="stylesheet">
     </head>
 
     <body>
         <header class="main-header">
             <!--Constant-->
-            <div id="page-heading">
+            <!--Page heading-->
+            <img class="logo" src="{{url_for('static', filename='logo.png')}}">
+            <!-- <h1 class="main-heading">Item Catalog</h1> -->
+        </header>
+
+        <section class="navbar">
+            <!-- <div id="page-heading"> -->
 				<!--Burger menu icon. Placed inside div to be able to center icon-->
-				<div class="menu-button">
-					<span onclick="openNav()" class="glyphicon glyphicon-menu-hamburger"></span>
-				</div>
-				<!--Page heading-->
-				<h1 class="main-heading">{{item.name}}</h1>
+			<div class="menu-button">
+				<span onclick="openNav()" class="glyphicon glyphicon-menu-hamburger"></span>
 			</div>
+			<!-- </div> -->
             <!--If logged in, display message, else display login button-->
             <div id="login-div">
-                <a href="" class="buttons">Login</a>
+                {% if 'username' not in login %}
+                <a href="{{url_for('login')}}" class="buttons login-button">Login</a>
+                {% else %}
+                <a href="{{url_for('gdisconnect')}}" class="buttons login-button">Logout</a>
+                {% endif %}
             </div>
-        </header>
+        </section>
 
         <section id="sideMenu" class="sidenav">
 			<!--&times creates an X for closing the menu-->
             <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-            <a href="#" class="menu-links">Login</a>
-            <a href="{{url_for('catalog')}}" class="menu-links">View Catalog</a>
-            <a href="#" class="menu-links">Add category</a>
-            <a href="#" class="menu-links">Add item</a>
-            <a href="#" class="menu-links">About</a>
-            <a href="#" class="menu-links">Contact details</a>
+            {% if 'username' not in login %}
+                <a href="{{url_for('login')}}" class="menu-links">Login</a>
+            {% else %}
+                <a href="{{url_for('gdisconnect')}}" class="menu-links">Logout</a>
+            {% endif %}
+                <a href="{{url_for('catalog')}}" class="menu-links">View Catalog</a>
+            {% if admin==True %}
+                <a href="{{url_for('addCategory')}}" class="menu-links">Add category</a>
+            {% endif %}
         </section>
 
         <section class="item-container">
-            <div class="cards item">
-                <figure class="item-figure">
-                    <picture class="item-image">
-                        <img class="item-picture" src="{{item.url}}" alt="">
-                    </picture>
-                    <figcaption class="item-caption">
-                        {{item.name}}
-                    </figcaption>
-                </figure>
 
-                <div class="item-description">
-                    <p class="description">{{item.description}}</p>
+            <div class="cards item">
+                <picture class="item-image">
+                    <img class="item-picture" src="{{item.url}}" alt="">
+
+                </picture>
+
+                <div class="name-container">
+                    <div class="item-name">
+                        <p class="iname">{{item.name}}</p>
+                    </div>
+
+                    <div class="item-description">
+                        <p class="description">{{item.description}}</p>
+                    </div>
                 </div>
             </div>
 
             <!--This should have an if statement to either display login
                 message or edit and delete buttons -->
             <div class="action-buttons">
-                <a href="{{url_for('editItem', category_id=category.id, item_id=item.id)}}" class="item-buttons buttons">
-                    Edit Item
-                </a>
+                {% if userAccess == True %}
+                <div class="ibutton-container">
+                    <a href="{{url_for('editItem', category_id=category.id, item_id=item.id)}}" class="buttons item-buttons">
+                        Edit Item
+                    </a>
+                </div>
 
-                <a href="{{url_for('deleteItem', category_id=category.id, item_id=item.id)}}" class="item-buttons buttons">
-                    Delete Item
-                </a>
+                <div class="ibutton-container">
+                    <a href="{{url_for('deleteItem', category_id=category.id, item_id=item.id)}}" class="buttons item-buttons">
+                        Delete Item
+                    </a>
+                </div>
+                {% else %}
+                <div class="no-account">
+                    <p>You dont have permission to edit or delete this item.</p>
+                </div>
+                {% endif %}
             </div>
         </section>
 
         <footer class="main-footer">
-            Test3
+            <p>+27 151 3535</p>
+            <p>wicwebdevelopment@gmail.com</p>
         </footer>
 
     </body>

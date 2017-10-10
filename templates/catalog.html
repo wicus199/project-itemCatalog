@@ -14,39 +14,61 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
         <script src="../static/main.js"></script>
+
+        <link href="https://fonts.googleapis.com/css?family=Amatic+SC" rel="stylesheet">
     </head>
 
     <body>
         <header class="main-header">
             <!--Constant-->
-            <div id="page-heading">
+            <!--Page heading-->
+            <img class="logo" src="{{url_for('static', filename='logo.png')}}">
+            <!-- <h1 class="main-heading">Item Catalog</h1> -->
+        </header>
+
+        <section class="navbar">
+            <!-- <div id="page-heading"> -->
 				<!--Burger menu icon. Placed inside div to be able to center icon-->
-				<div class="menu-button">
-					<span onclick="openNav()" class="glyphicon glyphicon-menu-hamburger"></span>
-				</div>
-				<!--Page heading-->
-				<h1 class="main-heading">Item Catalog</h1>
+			<div class="menu-button">
+				<span onclick="openNav()" class="glyphicon glyphicon-menu-hamburger"></span>
 			</div>
+			<!-- </div> -->
             <!--If logged in, display message, else display login button-->
             <div id="login-div">
-                <a href="" class="buttons">Login</a>
+                {% if 'username' not in login %}
+                <a href="{{url_for('login')}}" class="buttons login-button">Login</a>
+                {% else %}
+                <a href="{{url_for('gdisconnect')}}" class="buttons login-button">Logout</a>
+                {% endif %}
             </div>
-        </header>
+        </section>
 
         <section id="sideMenu" class="sidenav">
 			<!--&times creates an X for closing the menu-->
             <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-            <a href="#" class="menu-links">Login</a>
+        {% if 'username' not in login %}
+            <a href="{{url_for('login')}}" class="menu-links">Login</a>
+        {% else %}
+            <a href="{{url_for('gdisconnect')}}" class="menu-links">Logout</a>
+        {% endif %}
             <a href="{{url_for('catalog')}}" class="menu-links">View Catalog</a>
-            <a href="#" class="menu-links">Add category</a>
-            <a href="#" class="menu-links">Add item</a>
-            <a href="#" class="menu-links">About</a>
-            <a href="#" class="menu-links">Contact details</a>
+        {% if admin==True %}
+            <a href="{{url_for('addCategory')}}" class="menu-links">Add category</a>
+        {% endif %}
         </section>
 
-
+        <div class="flashMessages">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages%}
+                    <p>{{message}}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
 
         <section id="main-body" class="category-section">
+
             <!--The divs will be placed in a for loop that loops through
                 categories in the database -->
             <!--Variable length-->
@@ -55,7 +77,6 @@
                 <figure class="category-figure">
                     <!--Picture and captions will change-->
                     <picture class="category-picture">
-                        <!--Alt needs to have -->
                         <img class="category-poster" src="{{item.url}}" alt="">
                     </picture>
 
@@ -68,14 +89,21 @@
         </section>
 
         <section class="addSection">
+            {% if admin==True %}
             <a href="{{url_for('addCategory')}}" class="addButton buttons">
                 Add a Category
             </a>
+            {% else %}
+            <div class="no-account">
+                <p>Only admin can add categories!</p>
+            </div>
+            {% endif %}
         </section>
 
         <!--Will stay the same across all pages-->
         <footer class="main-footer">
-            Test3
+            <p>+27 151 3535</p>
+            <p>wicwebdevelopment@gmail.com</p>
         </footer>
     </body>
 

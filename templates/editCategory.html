@@ -16,44 +16,60 @@
         <link rel="stylesheet" href="{{url_for('static', filename='main.css')}}">
 
         <script src="{{url_for('static', filename='main.js')}}"></script>
+        <link href="https://fonts.googleapis.com/css?family=Amatic+SC" rel="stylesheet">
     </head>
 
     <body>
         <header class="main-header">
             <!--Constant-->
-            <div id="page-heading">
+            <!--Page heading-->
+            <img class="logo" src="{{url_for('static', filename='logo.png')}}">
+            <!-- <h1 class="main-heading">Item Catalog</h1> -->
+        </header>
+
+        <section class="navbar">
+            <!-- <div id="page-heading"> -->
 				<!--Burger menu icon. Placed inside div to be able to center icon-->
-				<div class="menu-button">
-					<span onclick="openNav()" class="glyphicon glyphicon-menu-hamburger"></span>
-				</div>
-				<!--Page heading-->
-				<h1 class="main-heading">Edit {{category.name}}</h1>
+			<div class="menu-button">
+				<span onclick="openNav()" class="glyphicon glyphicon-menu-hamburger"></span>
 			</div>
+			<!-- </div> -->
             <!--If logged in, display message, else display login button-->
             <div id="login-div">
-                <a href="" class="buttons">Login</a>
+                {% if 'username' not in login %}
+                <a href="{{url_for('login')}}" class="buttons login-button">Login</a>
+                {% else %}
+                <a href="{{url_for('gdisconnect')}}" class="buttons login-button">Logout</a>
+                {% endif %}
             </div>
-        </header>
+        </section>
 
         <section id="sideMenu" class="sidenav">
 			<!--&times creates an X for closing the menu-->
             <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-            <a href="#" class="menu-links">Login</a>
-            <a href="#" class="menu-links">View Catalog</a>
-            <a href="#" class="menu-links">Add category</a>
-            <a href="#" class="menu-links">Add item</a>
-            <a href="#" class="menu-links">About</a>
-            <a href="#" class="menu-links">Contact details</a>
+            {% if 'username' not in login %}
+                <a href="{{url_for('login')}}" class="menu-links">Login</a>
+            {% else %}
+                <a href="{{url_for('gdisconnect')}}" class="menu-links">Logout</a>
+            {% endif %}
+                <a href="{{url_for('catalog')}}" class="menu-links">View Catalog</a>
+            {% if admin==True %}
+                <a href="{{url_for('addCategory')}}" class="menu-links">Add category</a>
+            {% endif %}
+        </section>
+
+        <section class="page-heading">
+            <h1>Edit {{category.name}}</h1>
         </section>
 
         <section class="add-item">
             <form class="add-form" action="{{url_for('editCategory', category_id=category.id)}}" method="post">
 
                 <label for="iName">Category Name</label><br>
-                <input type="text" name="itemName" id="iName" value="{{category.name}}"><br>
+                <input type="text" name="itemName" id="iName" value="{{category.name}}" required><br>
 
                 <label for="iDescription">Category description:</label><br>
-                <input type="text" name="description" id="iDescription" value="{{category.description}}"></input><br>
+                <input type="text" name="description" id="iDescription" value="{{category.description}}" required><br>
 
                 <label for="picUrl">Picture URL:</label><br>
                 <input type="text" name="pic_url" id="picUrl" value="{{category.url}}"><br>
@@ -66,7 +82,8 @@
         </section>
 
         <footer class="main-footer">
-            <p>Test3</p>
+            <p>+27 151 3535</p>
+            <p>wicwebdevelopment@gmail.com</p>
         </footer>
 
     </body>

@@ -16,34 +16,50 @@
         <link rel="stylesheet" href="{{url_for('static', filename='main.css')}}">
 
         <script src="{{url_for('static', filename='main.js')}}"></script>
+        <link href="https://fonts.googleapis.com/css?family=Amatic+SC" rel="stylesheet">
     </head>
 
     <body>
         <header class="main-header">
             <!--Constant-->
-            <div id="page-heading">
+            <!--Page heading-->
+            <img class="logo" src="{{url_for('static', filename='logo.png')}}">
+            <!-- <h1 class="main-heading">Item Catalog</h1> -->
+        </header>
+
+        <section class="navbar">
+            <!-- <div id="page-heading"> -->
 				<!--Burger menu icon. Placed inside div to be able to center icon-->
-				<div class="menu-button">
-					<span onclick="openNav()" class="glyphicon glyphicon-menu-hamburger"></span>
-				</div>
-				<!--Page heading-->
-				<h1 class="main-heading">{{category.name}}</h1>
+			<div class="menu-button">
+				<span onclick="openNav()" class="glyphicon glyphicon-menu-hamburger"></span>
 			</div>
+			<!-- </div> -->
             <!--If logged in, display message, else display login button-->
             <div id="login-div">
-                <a href="" class="buttons">Login</a>
+                {% if 'username' not in login %}
+                <a href="{{url_for('login')}}" class="buttons login-button">Login</a>
+                {% else %}
+                <a href="{{url_for('gdisconnect')}}" class="buttons login-button">Logout</a>
+                {% endif %}
             </div>
-        </header>
+        </section>
+
+        <section class="page-heading">
+            <h1>{{category.name}}</h1>
+        </section>
 
         <section id="sideMenu" class="sidenav">
 			<!--&times creates an X for closing the menu-->
             <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-            <a href="#" class="menu-links">Login</a>
-            <a href="{{url_for('catalog')}}" class="menu-links">View Catalog</a>
-            <a href="#" class="menu-links">Add category</a>
-            <a href="#" class="menu-links">Add item</a>
-            <a href="#" class="menu-links">About</a>
-            <a href="#" class="menu-links">Contact details</a>
+            {% if 'username' not in login %}
+                <a href="{{url_for('login')}}" class="menu-links">Login</a>
+            {% else %}
+                <a href="{{url_for('gdisconnect')}}" class="menu-links">Logout</a>
+            {% endif %}
+                <a href="{{url_for('catalog')}}" class="menu-links">View Catalog</a>
+            {% if admin==True %}
+                <a href="{{url_for('addCategory')}}" class="menu-links">Add category</a>
+            {% endif %}
         </section>
 
         <section id="main-body" class="category-section">
@@ -67,21 +83,33 @@
         </section>
 
         <section class="addSection">
-            <a href="{{url_for('addItem', category_id=category.id)}}" class="actionButton buttons">
-                Add Item
-            </a>
+            <div class="button-container">
+                <a href="{{url_for('addItem', category_id=category.id)}}" class="actionButton buttons">
+                    Add Item
+                </a>
+            </div>
+            {% if admin==True %}
+            <div class="button-container">
+                <a href="{{url_for('editCategory', category_id=category.id)}}" class="actionButton buttons">
+                    Edit Category
+                </a>
+            </div>
 
-            <a href="{{url_for('editCategory', category_id=category.id)}}" class="actionButton buttons">
-                Edit Category
-            </a>
-
-            <a href="{{url_for('deleteCategory', category_id=category.id)}}" class="actionButton buttons">
-                Delete Category
-            </a>
+            <div class="button-container">
+                <a href="{{url_for('deleteCategory', category_id=category.id)}}" class="actionButton buttons">
+                    Delete Category
+                </a>
+            </div>
+            {% else %}
+            <div class="no-account">
+                <p>Only admin can edit or delete categories</p>
+            </div>
+            {% endif %}
         </section>
 
         <footer class="main-footer">
-            Footer
+            <p>+27 151 3535</p>
+            <p>wicwebdevelopment@gmail.com</p>
         </footer>
 
     </body>

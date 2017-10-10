@@ -8,26 +8,33 @@
     text-align: center;
 }
 
-input {
+label {
+    font-size: 25px;
+}
+
+input[type='text'] {
     border: 1px solid black;
     border-radius: 4px;
     padding: 5px 10px;
     width: 90%;
     display: inline-block;
+    height: 35px;
+    font-size: 20px !important;
+    font-family: 'Pompiere', cursive !important;
     /*margin: 20px 0;*/
 }
-
-textarea {
+/*
+#iDescription {
     height: 150px;
     resize: none;
     border: 1px solid black;
     border-radius: 4px;
     padding: 5px 10px;
     width: 90%;
-    /*margin: 20px 0;*/
     display: inline-block;
+    font-family: 'Pompiere', cursive !important;
 }
-
+*/
 select {
     width: 90%;
     border: 1px solid black;
@@ -35,7 +42,21 @@ select {
     padding: 5px 10px;
     text-align: center;
     display: inline-block;
+    height: 40px;
+    font-size: 20px !important;
+    font-family: 'Pompiere', cursive !important;
     /*margin: 20px 0;*/
+}
+
+input[type='submit'] {
+    margin: 10px 0;
+    border-radius: 4px;
+    padding: 5px 10px;
+    width: 90%;
+    display: inline-block;
+    height: 45px;
+    font-size: 25px !important;
+    font-family: 'Amatic SC', cursive !important;
 }
 
 .cancel-button {
@@ -45,10 +66,16 @@ select {
 .cancel {
     width: 90%;
     display: inline-block;
+    height: 45px;
+    font-size: 25px !important
 }
 
 @media screen and (min-width: 750px) {
-    input {
+    input[type='text'] {
+        width: 50%;
+    }
+
+    input[type='submit'] {
         width: 50%;
     }
 
