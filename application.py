@@ -1,29 +1,31 @@
-# Import flask package
-# TODO: Line length
-from flask import Flask, render_template, request, redirect, jsonify, url_for, flash, make_response
+# Import flask packages
+# Split over two lines two adhere to PEP8 guidelines
+from flask import Flask, render_template, request, redirect, jsonify
+from flask import url_for, flash, make_response
 # Import a new session as login_session to create unique session token
 from flask import session as login_session
-from sqlalchemy import create_engine, asc
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-# Used to import client_id and client_secret from json file
-from oauth2client.client import flow_from_clientsecrets  
-# Catches error if authorization code to token exchange fails
-from oauth2client.client import FlowExchangeError        
+# flow_from_clientsecrets used to import
+# client_id and client_secret from json file
+# FlowExchangeError Catches error if authorization
+# code to token exchange fails
+from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
 from database import Base, Category, Item, User
 # Random and string used to generate pseudo random string to identify sessions
 import random
 import string
-#Http client library
-import httplib2     
 import json
-#from flask import make_response     # Converts return value from a function into a response object to send to client
-import requests     # Apache http library
+# Apache http library
+import requests
 
 
 app = Flask(__name__)
 # Read client id from client_secrets.json file
-CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
-# Replace the email below with your google email if you want admin privileges 
+CLIENT_ID = json.loads(
+    open('client_secrets.json', 'r').read())['web']['client_id']
+# Replace the email below with your google email
+# if you want admin privileges
 site_admin = 'wicus92@gmail.com'
 
 # Connect to Database and create database session
@@ -33,23 +35,27 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+
 # Create anti-forgery state token
 # this token will be stored in a session to validate later on
 @app.route('/login')
 def login():
     # state token consists of uppercase letters and numbers. Length of 32
-    state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+                    for x in range(32))
     # Store state token in login_session
     login_session['state'] = state
     # Pass state token to login page
     return render_template('login.html', STATE=state)
+
 
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
     # Is correct STATE token received from client
     if request.args.get('state') != login_session['state']:
         # Send 401 Unauthorized response (Authentication is required but failed)
-        response = make_response(json.dumps('Incorrect state token received.'), 401)
+        response = make_response(
+            json.dumps('Incorrect state token received.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
     # Obtain the authorization code if state tokens match
@@ -57,7 +63,7 @@ def gconnect():
     code = request.data
 
     try:
-        # TODO: Comment
+        # Create a Flow object from the client_secrets.json file
         oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
         oauth_flow.redirect_uri = 'postmessage'
         # Exchange authorization code for credentials using step2_exchange
@@ -66,7 +72,8 @@ def gconnect():
     # If exception occurred
     except FlowExchangeError:
         # Send autentication failed response to client
-        response = make_response(json.dumps('Authorization code exchange failed'), 401)
+        response = make_response(
+            json.dumps('Authorization code exchange failed'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -74,7 +81,8 @@ def gconnect():
     # Store it in access_token
     access_token = credentials.access_token
     # Url provided by google to check if access token is valid
-    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={0}'.format(access_token))
+    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={0}'
+           .format(access_token))
     
     # Get request from google url
     r = requests.get(url)
@@ -101,7 +109,8 @@ def gconnect():
     # If this point is reached, access token is valid for specific user
     # Determine if access token is valid for this specific location
     if result['issued_to'] != CLIENT_ID:
-        response = make_response(json.dumps("Token's client_id and app id does not match"), 401)
+        response = make_response(
+            json.dumps("Token's client_id and app id does not match"), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -152,6 +161,7 @@ def gconnect():
     output += '-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
     return output
 
+
 # Disconnect user
 @app.route("/gdisconnect")
 def gdisconnect():
@@ -159,7 +169,8 @@ def gdisconnect():
     # If no user is logged in
     if access_token is None:
         #TODO: Line length
-        response = make_response(json.dumps('Current user not connected.'), 401)
+        response = make_response(json.dumps('Current user not connected.'),
+                                 401)
         response.headers['Content-Type'] = 'application/json'
         return response
     # Append access token to google revoke url
@@ -167,7 +178,8 @@ def gdisconnect():
     params = {'token':access_token}
     result = requests.get(url, params=params)
     
-    # If google successfully revoked token, delete user data from login_session
+    # If google successfully revoked token,
+    # delete user data from login_session
     if result.status_code == 200:
         del login_session['access_token']
         del login_session['gplus_id']
@@ -182,8 +194,8 @@ def gdisconnect():
     else:
         # 400: Bad request
         # Token revoke failed
-        # TODO: Line length
-        response = make_response(json.dumps('Failed to revoke client token.'), 400)
+        response = make_response(json.dumps('Failed to revoke client token.'),
+                                 400)
         response.headers['Content-Type'] = 'application.json'
         return response
 
@@ -201,8 +213,9 @@ def catalog():
             # Admin value passed to html page to know which buttons to render
             admin = True
     # Pass main_catalog to catalog.html page (main page) into catalog_items
-    # TODO: Line length
-    return render_template('catalog.html', catalog_items=main_catalog, login=login_session, admin=admin)
+    return render_template('catalog.html', catalog_items=main_catalog,
+                           login=login_session, admin=admin)
+
 
 # JSON endpoint to view categories in catalog
 @app.route('/catalog/json')
@@ -224,21 +237,25 @@ def viewCategory(category_id):
     # Query the items in a single category
     category = session.query(Category).filter_by(id=category_id).one()
     items = session.query(Item).filter_by(category_id=category.id).all()
-    return render_template('category.html', category=category, itemList=items, login=login_session, admin=admin)
-    
+    return render_template('category.html', category=category, itemList=items,
+                           login=login_session, admin=admin)
+
+
 # JSON endpoint containing info of a single category
 @app.route('/catalog/<int:category_id>/json')
 def viewCategoryJson(category_id):
     category = session.query(Category).filter_by(id=category_id).one()
     return jsonify(Category=[category.serialize])
-    
+
+
 # JSON endpoint containing items in a category
 @app.route('/catalog/<int:category_id>/items/json')
 def viewItemsJson(category_id):
     category = session.query(Category).filter_by(id=category_id).one()
     items = session.query(Item).filter_by(category_id=category.id).all()
     return jsonify(CategoryItems=[item.serialize for item in items])
-    
+
+
 # Add a category -- Methods: GET, POST
 @app.route('/catalog/add/', methods=['GET','POST'])
 def addCategory():
@@ -270,7 +287,9 @@ def addCategory():
         session.commit()
         return redirect(url_for('catalog'))
     else:
-        return render_template('addCategory.html', login=login_session, admin=admin)
+        return render_template('addCategory.html', login=login_session,
+                               admin=admin)
+
 
 # Edit a category -- Methods: GET, POST
 @app.route('/catalog/<int:category_id>/edit/', methods=['GET','POST'])
@@ -301,7 +320,9 @@ def editCategory(category_id):
         session.commit()
         return redirect(url_for('viewCategory', category_id=category.id))
     else:
-        return render_template('editCategory.html', category=category, login=login_session, admin=admin)
+        return render_template('editCategory.html', category=category,
+                               login=login_session, admin=admin)
+
 
 # Delete a category -- Methods: GET, POST
 @app.route('/catalog/<int:category_id>/delete/', methods=['GET','POST'])
@@ -321,24 +342,33 @@ def deleteCategory(category_id):
         session.commit()
         return redirect(url_for('catalog'))
     else:
-        return render_template('deleteCategory.html', category=category, login=login_session, admin=admin)
+        return render_template('deleteCategory.html', category=category,
+                               login=login_session, admin=admin)
+
 
 # View an item -- Methods: GET
 @app.route('/catalog/<int:category_id>/item/<int:item_id>/')
 def viewItem(category_id, item_id):
-    # Add parameter to render_template to render buttons based on whether user is logged in
+    # Add parameter to render_template to render buttons
+    # based on whether user is logged in
     category = session.query(Category).filter_by(id=category_id).one()
     item = session.query(Item).filter_by(id=item_id).one()
     itemOwnerID = item.user_id
-    # If a user is logged in and owner of item, buttons will render to edit and delete item. 
+    # If a user is logged in and owner of item, buttons
+    # will render to edit and delete item.
     # Otherwise no buttons, but a message. Admin is owner of all items
-    if 'username' in login_session and (itemOwnerID == login_session['user_id'] or login_session['email'] == 'wicus92@gmail.com'):
+    # Note: Line broken into 3 lines to adhere to PEP8 guidelines
+    if 'username' in login_session and (
+                    itemOwnerID == login_session['user_id'] or
+                    login_session['email'] == 'wicus92@gmail.com'):
         # User will have access to buttons
         userAccess = True
     else:
         # Buttons won't render
         userAccess = False
-    return render_template('items.html', category=category, item=item, login=login_session, userAccess=userAccess)
+    return render_template('items.html', category=category, item=item,
+                           login=login_session, userAccess=userAccess)
+
 
 # JSON endpoint to view information on a single item
 @app.route('/catalog/<int:category_id>/item/<int:item_id>/json')
@@ -347,17 +377,19 @@ def viewItemJson(category_id, item_id):
     item = session.query(Item).filter_by(id=item_id).one()
     return jsonify(Item=item.serialize)
 
+
 # Create a new item inside a category -- Methods: GET, POST
 @app.route('/catalog/<int:category_id>/add/', methods=['GET','POST'])
 def addItem(category_id):
-    # This if statement prevents the user from accessing directly from link
+    # This if statement prevents the user
+    # from accessing directly from link
     if 'username' not in login_session:
         return redirect('/login')
     # Query all categories to be able to select a category from the 
     # dropdown menu in the html form
     categories = session.query(Category).all()
-    # Query the category where user selected to add item. This will be default
-    # option in the dropdown menu 
+    # Query the category where user selected to add item.
+    # This will be default option in the dropdown menu
     category = session.query(Category).filter_by(id=category_id).one()
     # Get the category id selected in the form.  
     cat_id = request.form.get('cat-name')
@@ -383,10 +415,12 @@ def addItem(category_id):
         # Add new item to database
         session.add(newItem)
         session.commit()
-        #returns to the page of the selected category of the new item
+        # returns to the page of the selected category of the new item
         return redirect(url_for('viewCategory', category_id=int(cat_id)))
     else:
-        return render_template('addItem.html', category=category, categories=categories, login=login_session)
+        return render_template('addItem.html', category=category,
+                               categories=categories, login=login_session)
+
 
 # Edit an item -- Methods: GET, POST
 @app.route('/catalog/<int:category_id>/item/<int:item_id>/edit/', methods=['GET','POST'])
@@ -396,8 +430,9 @@ def editItem(category_id, item_id):
     item = session.query(Item).filter_by(id=item_id).one()
     creatorID = item.user_id
     
-    # Do these the same as category. Don't render buttons in viewItem when user is not creator.
-    # Also need to prevent user from accessing link directly
+    # Do these the same as category. Don't render buttons in viewItem
+    # when user is not creator. Also need to prevent user from
+    # accessing link directly
     if 'username' not in login_session:
         return redirect('/login')
     # Unauthorized user tried to access directly from url
@@ -425,12 +460,17 @@ def editItem(category_id, item_id):
         # Commit changes to database
         session.add(item)
         session.commit()
-        return redirect(url_for('viewItem', category_id=cat_id, item_id=item.id))
+        return redirect(url_for('viewItem', category_id=cat_id,
+                                item_id=item.id))
     else:
-        return render_template('editItem.html', categories=categories, category=category, item=item, login=login_session)
+        # Note: Line broken into 3 lines to adhere to PEP8 guidelines
+        return render_template('editItem.html', categories=categories,
+                               category=category, item=item,
+                               login=login_session)
 
 # Delete an item -- Methods: GET, POST
-@app.route('/catalog/<int:category_id>/item/<int:item_id>/delete/', methods=['GET','POST'])
+@app.route('/catalog/<int:category_id>/item/<int:item_id>/delete/',
+           methods=['GET','POST'])
 def deleteItem(category_id, item_id):
     category = session.query(Category).filter_by(id=category_id).one()
     item = session.query(Item).filter_by(id=item_id).one()
@@ -450,15 +490,19 @@ def deleteItem(category_id, item_id):
         session.commit()
         return redirect(url_for('viewCategory', category_id=category.id))
     else:
-        return render_template('deleteItem.html', category=category, item=item, login=login_session,)
+        return render_template('deleteItem.html', category=category,
+                               item=item, login=login_session,)
 
-# Function that takes in a user id and returns a User object containing user info
+
+# Function that takes in a user id and returns a User object
+# containing user info
 def getUserInfo(user_id):
     user_info = session.query(User).filter_by(user_id=user_id)
     return user_info
 
-# Function that takes a user email as parameter and returns the user id if the user exists
-# user id needed to get user info
+
+# Function that takes a user email as parameter and returns the
+# user id if the user exists user id needed to get user info
 def getUserId(user_email):
     try:
         user = session.query(User).filter_by(email=user_email).one()
@@ -466,9 +510,13 @@ def getUserId(user_email):
     except:
         return None
 
-# Creates a user by using credentials stored in login_session from gconnect
+
+# Creates a user by using credentials stored in
+# login_session from gconnect
 def createUser(login_session):
-    newUser = User(name=login_session['username'], email=login_session['email'], picture=login_session['picture'])
+    newUser = User(name=login_session['username'],
+                   email=login_session['email'],
+                   picture=login_session['picture'])
     session.add(newUser)
     session.commit()
     # Retrieve user id that can be used when requesting user info
