@@ -23,6 +23,8 @@ import requests     # Apache http library
 app = Flask(__name__)
 # Read client id from client_secrets.json file
 CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
+# Replace the email below with your google email if you want admin privileges 
+site_admin = 'wicus92@gmail.com'
 
 # Connect to Database and create database session
 engine = create_engine('sqlite:///catalogDatabaseWithUsers')
@@ -35,29 +37,35 @@ session = DBSession()
 # this token will be stored in a session to validate later on
 @app.route('/login')
 def login():
+    # state token consists of uppercase letters and numbers. Length of 32
     state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))
+    # Store state token in login_session
     login_session['state'] = state
+    # Pass state token to login page
     return render_template('login.html', STATE=state)
 
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
     # Is correct STATE token received from client
     if request.args.get('state') != login_session['state']:
-        # 401 Unauthorized: Authentication is required but failed
+        # Send 401 Unauthorized response (Authentication is required but failed)
         response = make_response(json.dumps('Incorrect state token received.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-    # Obtain the authorization code if states match
+    # Obtain the authorization code if state tokens match
     # Obtain code from request data
     code = request.data
 
     try:
+        # TODO: Comment
         oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
         oauth_flow.redirect_uri = 'postmessage'
         # Exchange authorization code for credentials using step2_exchange
         # Creates a Oauth2Credentials object
         credentials = oauth_flow.step2_exchange(code)
+    # If exception occurred
     except FlowExchangeError:
+        # Send autentication failed response to client
         response = make_response(json.dumps('Authorization code exchange failed'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
@@ -65,28 +73,26 @@ def gconnect():
     # Return the access token and its expiration information.
     # Store it in access_token
     access_token = credentials.access_token
-    print(access_token)
     # Url provided by google to check if access token is valid
     url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={0}'.format(access_token))
-
+    
+    # Get request from google url
     r = requests.get(url)
     result = json.loads(r.text)
 
     # If there was an error:
     if result.get('error') is not None:
-        # We don't know what the error is yet, thus return code 500
+        # We don't know what the error is yet, 
+        # thus return code 500 (Internal server error)
         response = make_response(json.dumps(result.get('error')), 500)
         response.headers['Content-Type'] = 'application/json'
-        print(response)     # For debugging
         return response
 
     # If this point is reached, the access token is valid.
     # Now we have to determine if it is used for the intended user.
 
-    gplus_id = credentials.id_token['sub']  # TODO: id_token?
+    gplus_id = credentials.id_token['sub']  
     # If user_id's do not match
-    print("User_id: {0}".format(result['user_id']))
-    print("gplus_id: {0}".format(gplus_id))
     if result['user_id'] != gplus_id:
         response = make_response(json.dumps('User IDs do not match'), 401)
         response.headers['Content-Type'] = 'application/json'
@@ -94,7 +100,6 @@ def gconnect():
 
     # If this point is reached, access token is valid for specific user
     # Determine if access token is valid for this specific location
-    # TODO: check values of result from google docs
     if result['issued_to'] != CLIENT_ID:
         response = make_response(json.dumps("Token's client_id and app id does not match"), 401)
         response.headers['Content-Type'] = 'application/json'
@@ -103,6 +108,7 @@ def gconnect():
     # Check to see if user is already logged in
     user_access_token = login_session.get('access_token')
     user_gplus_id = login_session.get('gplus_id')
+    # If user is already logged in:
     if user_access_token is not None and gplus_id == user_gplus_id:
         response = make_response(json.dumps('User already logged in.'), 200)
         response.headers['Content-Type'] = 'application/json'
@@ -110,56 +116,58 @@ def gconnect():
 
     # Store access token
     login_session['access_token'] = credentials.access_token
-    print(login_session['access_token'])
     login_session['gplus_id'] = gplus_id
 
-    # Get user info from provider
     # Url from google docs
     url_info = "https://www.googleapis.com/oauth2/v1/userinfo"
     q_params = {'access_token':credentials.access_token, 'alt':'json'}
+    # Get user info from provider
     user_info = requests.get(url_info, params = q_params)
 
     # Do json decoding on user_info
     user_data = user_info.json()
-
+    # Store user details in login_session
     login_session['username'] = user_data['name']
     login_session['picture'] = user_data['picture']
     login_session['email'] = user_data['email']
 
     # Create a new user if the user does not exist
+    # Get user id using email in login_session
     user_id = getUserId(login_session['email'])
+    # If there isn't a user_id present, create a new user.
     if not user_id:
+        # createUser() returns user_id
         user_id = createUser(login_session)
+    # Store user_id in login_session
     login_session['user_id'] = user_id
 
-    # This needs to be passed to the template in another way. This is dirty
+    #Output will be passed to client (Browser)
     output = ''
     output += '<h1>Welcome, '
     output += login_session['username']
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
-    #flash("you are now logged in as %s" % login_session['username'])
-    print("done!")
+    output += '" style="width: 300px; height: 300px;border-radius: 150px;'
+    output += '-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
     return output
 
 # Disconnect user
 @app.route("/gdisconnect")
 def gdisconnect():
     access_token = login_session['access_token']
-    print(access_token)
+    # If no user is logged in
     if access_token is None:
+        #TODO: Line length
         response = make_response(json.dumps('Current user not connected.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-
+    # Append access token to google revoke url
     url = 'https://accounts.google.com/o/oauth2/revoke'
     params = {'token':access_token}
     result = requests.get(url, params=params)
-    print(result.url)
-    print(result.status_code)
-
+    
+    # If google successfully revoked token, delete user data from login_session
     if result.status_code == 200:
         del login_session['access_token']
         del login_session['gplus_id']
@@ -168,11 +176,13 @@ def gdisconnect():
         del login_session['picture']
         response = make_response(json.dumps('Successfully disconnected'), 200)
         response.headers['Content-Type'] = 'application/json'
+        # Flash message to display on homepage
         flash("You were successfully logged out!")
         return redirect('/catalog')
-        #return response
     else:
         # 400: Bad request
+        # Token revoke failed
+        # TODO: Line length
         response = make_response(json.dumps('Failed to revoke client token.'), 400)
         response.headers['Content-Type'] = 'application.json'
         return response
@@ -187,11 +197,14 @@ def catalog():
     admin = False
     # If user is not admin user, don't render add category button
     if 'username' in login_session:
-        if login_session['email'] == 'wicus92@gmail.com':
+        if login_session['email'] == site_admin:
+            # Admin value passed to html page to know which buttons to render
             admin = True
     # Pass main_catalog to catalog.html page (main page) into catalog_items
+    # TODO: Line length
     return render_template('catalog.html', catalog_items=main_catalog, login=login_session, admin=admin)
 
+# JSON endpoint to view categories in catalog
 @app.route('/catalog/json')
 def catalogJson():
     categories = session.query(Category).all()
@@ -202,12 +215,13 @@ def catalogJson():
 @app.route('/catalog/<int:category_id>/')
 def viewCategory(category_id):
     admin = False
-    # If user is not admin, don't render edit and delete category buttons in html
+    # If user is not admin, don't render edit and 
+    # delete category buttons in html
     if 'username' in login_session:
-        if login_session['email'] == 'wicus92@gmail.com':
+        if login_session['email'] == site_admin:
             admin = True
     
-    # Query the items in a category
+    # Query the items in a single category
     category = session.query(Category).filter_by(id=category_id).one()
     items = session.query(Item).filter_by(category_id=category.id).all()
     return render_template('category.html', category=category, itemList=items, login=login_session, admin=admin)
@@ -232,7 +246,7 @@ def addCategory():
     # The if statement prevents a user to get direct access through url
     if 'username' not in login_session:
         return redirect('/login')
-    if login_session['email'] != 'wicus92@gmail.com':
+    if login_session['email'] != site_admin:
         # Access denied. Render access denied page
         return render_template('accessDenied.html')
     admin = True
@@ -240,15 +254,18 @@ def addCategory():
     default_img = '/static/category_default.jpg'
 
     if request.method == 'POST':
+        # If the user does not provide a url for the image, load default
         if not(request.form['pic_url']):
             url = default_img
         else:
             url = request.form['pic_url']
+        # Add info to new category
         newCat = Category(
             name=request.form['itemName'],
             description=request.form['description'],
             url=url,
             user_id=login_session['user_id'])
+        # Add catefory to database
         session.add(newCat)
         session.commit()
         return redirect(url_for('catalog'))
@@ -263,19 +280,23 @@ def editCategory(category_id):
     # The if statement prevents a user to get direct access through url
     if 'username' not in login_session:
         return redirect('/login')
-    if login_session['email'] != 'wicus92@gmail.com':
+    if login_session['email'] != site_admin:
         # Access denied. Render access denied page
         return render_template('accessDenied.html')
     admin = True
+    # Default image for category located in static folder
     default_img = '/static/category_default.jpg'
     if request.method == 'POST':
+        # If the user does not provide a url for the image, load default
         if not(request.form['pic_url']):
             url = default_img
         else:
             url = request.form['pic_url']
+        # Add changes to the category entry
         category.name = request.form['itemName']
         category.description = request.form['description']
         category.url = url
+        # Commit changes
         session.add(category)
         session.commit()
         return redirect(url_for('viewCategory', category_id=category.id))
@@ -290,11 +311,12 @@ def deleteCategory(category_id):
     # The if statement prevents a user to get direct access through url
     if 'username' not in login_session:
         return redirect('/login')
-    if login_session['email'] != 'wicus92@gmail.com':
+    if login_session['email'] != site_admin:
         # Access denied. Render access denied page
         return render_template('accessDenied.html')
     admin = True
     if request.method == 'POST':
+        # Delete category from database
         session.delete(category)
         session.commit()
         return redirect(url_for('catalog'))
@@ -309,10 +331,12 @@ def viewItem(category_id, item_id):
     item = session.query(Item).filter_by(id=item_id).one()
     itemOwnerID = item.user_id
     # If a user is logged in and owner of item, buttons will render to edit and delete item. 
-    # Otherwise no buttons, but a message.
+    # Otherwise no buttons, but a message. Admin is owner of all items
     if 'username' in login_session and (itemOwnerID == login_session['user_id'] or login_session['email'] == 'wicus92@gmail.com'):
+        # User will have access to buttons
         userAccess = True
     else:
+        # Buttons won't render
         userAccess = False
     return render_template('items.html', category=category, item=item, login=login_session, userAccess=userAccess)
 
@@ -329,19 +353,26 @@ def addItem(category_id):
     # This if statement prevents the user from accessing directly from link
     if 'username' not in login_session:
         return redirect('/login')
-
+    # Query all categories to be able to select a category from the 
+    # dropdown menu in the html form
     categories = session.query(Category).all()
+    # Query the category where user selected to add item. This will be default
+    # option in the dropdown menu 
     category = session.query(Category).filter_by(id=category_id).one()
+    # Get the category id selected in the form.  
     cat_id = request.form.get('cat-name')
-
+    # Get the user id of the user creating the item.
     itemCreator = getUserId(login_session['email'])
+    # Location of default image to load if no url provided by user
     default_img = '/static/random_item.jpg'
 
     if request.method == 'POST':
+        # If the user does not provide a url for the image, load default
         if not(request.form['pic_url']):
             url = default_img
         else:
             url = request.form['pic_url']
+        # Add form info to new item    
         newItem = Item(
             name = request.form['itemName'],
             description = request.form['description'],
@@ -349,6 +380,7 @@ def addItem(category_id):
             category_id = int(cat_id),
             user_id = itemCreator
         )
+        # Add new item to database
         session.add(newItem)
         session.commit()
         #returns to the page of the selected category of the new item
@@ -370,23 +402,27 @@ def editItem(category_id, item_id):
         return redirect('/login')
     # Unauthorized user tried to access directly from url
     userId = getUserId(login_session['email'])
-    if login_session['email'] != 'wicus92@gmail.com':
+    if login_session['email'] != site_admin:
         if userId != creatorID:
             return render_template('accessDenied.html')
-        
+    # Query all categories to provide dropdown list in html form    
     categories = session.query(Category).all()
     cat_id = request.form.get('cat-name')
+    # Location of default image to load if no url provided by user
     default_img = '/static/random_item.jpg'
 
     if request.method == 'POST':
+        # If the user does not provide a url for the image, load default
         if not(request.form['pic_url']):
             url = default_img
         else:
             url = request.form['pic_url']
+        # Add changes to item
         item.name = request.form['itemName']
         item.description = request.form['description']
         item.url = url
-        item.category_id = request.form.get('cat-name')    #request.form.get('')
+        item.category_id = request.form.get('cat-name')
+        # Commit changes to database
         session.add(item)
         session.commit()
         return redirect(url_for('viewItem', category_id=cat_id, item_id=item.id))
@@ -399,16 +435,17 @@ def deleteItem(category_id, item_id):
     category = session.query(Category).filter_by(id=category_id).one()
     item = session.query(Item).filter_by(id=item_id).one()
     creatorID = item.user_id
-    
+    # Prevent user from accessing page through url
     if 'username' not in login_session:
         return redirect('/login')
     # Unauthorized user tried to access directly from url
     userId = getUserId(login_session['email'])
-    if login_session['email'] != 'wicus92@gmail.com':
+    if login_session['email'] != site_admin:
         if userId != creatorID:
             return render_template('accessDenied.html')
 
     if request.method == 'POST':
+        # Delete item from database and redirect back to category
         session.delete(item)
         session.commit()
         return redirect(url_for('viewCategory', category_id=category.id))
