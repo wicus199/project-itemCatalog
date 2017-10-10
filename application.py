@@ -168,7 +168,6 @@ def gdisconnect():
     access_token = login_session['access_token']
     # If no user is logged in
     if access_token is None:
-        #TODO: Line length
         response = make_response(json.dumps('Current user not connected.'),
                                  401)
         response.headers['Content-Type'] = 'application/json'

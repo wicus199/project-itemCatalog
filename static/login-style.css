@@ -17,11 +17,6 @@
     font-size: 30px;
 }
 
-@media screen and (min-width: 550px) {
-
-
-}
-
 @media screen and (min-width: 750px) {
     #signInButton {
         width: 30%;
@@ -33,10 +28,4 @@
     #signInButton {
         width: 20%;
     }
-
-}
-
-@media screen and (min-width: 1250px) {
-
-
 }
