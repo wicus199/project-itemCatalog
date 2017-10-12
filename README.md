@@ -54,9 +54,32 @@ The code was developed for python version 3.6.1 in windows 10. This was not test
 To be able to run the application, install python 3.6.x by downloading python from [here](https://www.python.org/downloads/) and running the setup file. 
 
 The following python packages were used: 
-* Flask
-* sqlalchemy
-* Developed and tested on Windows 10 using pyCharm community edition
+* Flask 0.12.2
+* SQLAlchemy 1.1.11
+* oauth2client 4.1.2
+* requests 2.14.2
+* Developed and tested on Windows 10 using pyCharm community edition IDE
+
+To install the packages, you can use the pip command. If you don't know how, follow [this](https://docs.python.org/3/installing/index.html) link. 
+
+To be able to run the application, do the following:
+* Visit [https://console.developers.google.com] and log into your google account. 
+* Click the **Create Project** button and name the project however you like.
+* Go the created app page and choose **Credentials** from the menu on the left.
+* Visit the **OAuth consent screen** tab. Enter your email address and a project name and click **Save**
+* In the **Credentials** tab, click on **Create credentials** and then **OAuth client id**
+* Select **Web application**
+* Add **http://localhost:5000** to the Authorized JavaScript origins
+* Add **http://localhost:5000/gconnect** and **http://localhost:5000/login** to the Authorized Redirect URIs and click **Create**
+* Click the **download JSON** icon to the far right of the web client in the **Credentials** tab. 
+* Copy the JSON file to the project root directory (same directory as application.py) and rename the file to **client_secrets.json**
+* Open the login.html file in the templates folder and replace the **CLIENT_ID_HERE** text with your cient id that you can find in the client_secrets.json file
+
+A recommended option is to change the **site_admin** string on line 29 of **application.py** to your email address that you will be using to log 
+into the website. This will allow you to add, edit and delete categories, as well as any applications. **However**, this will then not take user authorization
+into account because you will be able to delete and edit items of all the users in the database. To test user authorization when adding items, change the **site_admin**
+email to something else. 
+ 
 
 ## API Reference
 
@@ -72,4 +95,4 @@ The website contains the following JSON endpoints that contains the same info as
 To test website functionality, perform the following steps:
 1. Open application.py in a python editor and run using python 3.6.1 interpreter. Alternatively, run the application by opening a command prompt in the project root directory
 where application.py is located and enter **python application.py** in the console. This will run the app.
-2. Open your browser (Chrome was used for testing) and visit localhost:5000/ or localhost:5000/catalog. This will open the homepage
+2. Open your browser (Chrome was used for testing) and visit localhost:5000/ or localhost:5000/catalog. This will open the homepage. Enjoy
