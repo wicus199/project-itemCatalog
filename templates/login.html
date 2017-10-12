@@ -1,0 +1,98 @@
+<!doctype html>
+
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+        <meta name="mobile-web-app-capable" content="yes">
+
+        <title>Login</title>
+        <link rel="stylesheet" href="{{url_for('static', filename='login-style.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename='main.css')}}">
+
+        <!--Import to use glyphicons-->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+        <script src="{{url_for('static', filename='main.js')}}"></script>
+
+        <!-- Add scripts for google sign in -->
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script src="//apis.google.com/js/platform.js?onload=start"> </script>
+
+        <link href="https://fonts.googleapis.com/css?family=Amatic+SC" rel="stylesheet">
+    </head>
+
+    <body>
+        <header class="main-header">
+            <!--Constant-->
+            <!--Page heading-->
+            <img class="logo" src="{{url_for('static', filename='logo.png')}}">
+            <!-- <h1 class="main-heading">Item Catalog</h1> -->
+        </header>
+
+        <section class="login-section">
+            <!-- Div id and span class need to have those exact names to use styling from google -->
+            <div id="signInButton">
+                <span class="g-signin"
+                    data-scope="openid email"
+                    data-clientid="CLIENT_ID_HERE.apps.googleusercontent.com"
+                    data-redirecturi="postmessage"
+                    data-accesstype="offline"
+                    data-cookiepolicy="single_host_origin"
+                    data-callback="signInCallback"
+                    data-approvalprompt="force">
+                </span>
+            </div>
+        </section>
+
+        <!-- This will be populated with response -->
+        <div id="result"></div>
+
+        <footer class="main-footer">
+            <p>+27 151 3535</p>
+            <p>wicwebdevelopment@gmail.com</p>
+        </footer>
+
+    <script>
+        // Callback method to handle response that google sends back to the client
+        function signInCallback(authResult) {   //authResult is object returned from google
+            //If object contains code, authorization was successful
+            if (authResult['code']) {
+                // Hide signin button when app is authorized
+                $('#signInButton').attr('style', 'display: none');
+                // Asynchronous request to the server
+                // Passes one-time code google provided to client (browser) on to
+                // the server.
+                $.ajax({
+                    type: 'POST',   //Post method
+                    url: '/gconnect?state={{STATE}}',    //URL method will call STATE to verify against CSRF attack
+                    processData: false,     //Dont transform request data into query string
+                    contentType: 'application/octet-stream; charset=utf-8',
+                    data: authResult['code'],
+                    success: function(result) {
+                        if (result) {
+                            //Still need to do something more aesthetically pleasing here
+                            $('#result').html('Login Successful</br>' + result + '</br>Redirecting...')
+                            setTimeout(function() {
+                                //Redirect to the main catalog page. Can maybe pass function name
+                                // into login page when redirecting here to redirect back to the
+                                // previous page after logging in.
+                                window.location.href = "/catalog";
+                            }, 2000);
+                        // If error returned from server to callback function
+                        } else if (authResult['error']) {
+                        console.log('There was an error: ' + authResult['error']);
+                        // If nothing returned from server after post method
+                        } else {
+                            $('#result').html('Failed to make a server-side call. Check your configuration and console.');
+                        }
+                    }
+                }); //Ajax call finished
+            } //Outside if finished
+        } // Callback function finished
+    </script>
+
+    </body>
+
+</html>
