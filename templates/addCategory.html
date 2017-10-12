@@ -21,20 +21,16 @@
 
     <body>
         <header class="main-header">
-            <!--Constant-->
-            <!--Page heading-->
+            <!--Website logo-->
             <img class="logo" src="{{url_for('static', filename='logo.png')}}">
-            <!-- <h1 class="main-heading">Item Catalog</h1> -->
         </header>
 
         <section class="navbar">
-            <!-- <div id="page-heading"> -->
-				<!--Burger menu icon. Placed inside div to be able to center icon-->
+		    <!--Burger menu icon. Placed inside div to be able to center icon-->
 			<div class="menu-button">
 				<span onclick="openNav()" class="glyphicon glyphicon-menu-hamburger"></span>
 			</div>
-			<!-- </div> -->
-            <!--If logged in, display message, else display login button-->
+            <!--If logged in, display Logout, else display Login button-->
             <div id="login-div">
                 {% if 'username' not in login %}
                 <a href="{{url_for('login')}}" class="buttons login-button">Login</a>
@@ -51,6 +47,7 @@
         <section id="sideMenu" class="sidenav">
 			<!--&times creates an X for closing the menu-->
             <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <!-- Choose what to display depending on login status -->
             {% if 'username' not in login %}
                 <a href="{{url_for('login')}}" class="menu-links">Login</a>
             {% else %}
@@ -59,25 +56,27 @@
                 <a href="{{url_for('catalog')}}" class="menu-links">View Catalog</a>
         </section>
 
+        <!-- Create form to add category -->
         <section class="add-item">
             <form class="add-form" action="{{url_for('addCategory')}}" method="post">
-
+                <!-- Required field -->
                 <label for="iName">Category Name</label><br>
                 <input type="text" name="itemName" id="iName" required><br>
-
+                <!-- Required field -->
                 <label for="iDescription">Category description:</label><br>
                 <input type="text" name="description" id="iDescription" required><br>
-
+                <!-- Not required, default image loaded if not given -->
                 <label for="picUrl">Picture URL:</label><br>
                 <input type="text" name="pic_url" id="picUrl"><br>
 
                 <input type="submit" value="Submit" class="buttons">
             </form>
             <div class="cancel-button">
+                <!-- Redirect to main page if cancel button is clicked -->
                 <a href="{{url_for('catalog')}}" class="buttons cancel">Cancel</a>
             </div>
         </section>
-
+        <!-- Simple footer -->
         <footer class="main-footer">
             <p>+27 151 3535</p>
             <p>wicwebdevelopment@gmail.com</p>

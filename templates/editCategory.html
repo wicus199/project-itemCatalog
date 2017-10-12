@@ -21,10 +21,8 @@
 
     <body>
         <header class="main-header">
-            <!--Constant-->
-            <!--Page heading-->
+            <!--Page logo-->
             <img class="logo" src="{{url_for('static', filename='logo.png')}}">
-            <!-- <h1 class="main-heading">Item Catalog</h1> -->
         </header>
 
         <section class="navbar">
@@ -33,8 +31,7 @@
 			<div class="menu-button">
 				<span onclick="openNav()" class="glyphicon glyphicon-menu-hamburger"></span>
 			</div>
-			<!-- </div> -->
-            <!--If logged in, display message, else display login button-->
+            <!--If logged in, display Logout, else display Login button-->
             <div id="login-div">
                 {% if 'username' not in login %}
                 <a href="{{url_for('login')}}" class="buttons login-button">Login</a>
@@ -61,7 +58,7 @@
         <section class="page-heading">
             <h1>Edit {{category.name}}</h1>
         </section>
-
+        <!--Same form as add category, only with pre populated fields-->
         <section class="add-item">
             <form class="add-form" action="{{url_for('editCategory', category_id=category.id)}}" method="post">
 

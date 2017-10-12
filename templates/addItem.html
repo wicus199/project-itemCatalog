@@ -21,20 +21,16 @@
 
     <body>
         <header class="main-header">
-            <!--Constant-->
-            <!--Page heading-->
+            <!--Page logo-->
             <img class="logo" src="{{url_for('static', filename='logo.png')}}">
-            <!-- <h1 class="main-heading">Item Catalog</h1> -->
         </header>
 
         <section class="navbar">
-            <!-- <div id="page-heading"> -->
-				<!--Burger menu icon. Placed inside div to be able to center icon-->
+			<!--Burger menu icon. Placed inside div to be able to center icon-->
 			<div class="menu-button">
 				<span onclick="openNav()" class="glyphicon glyphicon-menu-hamburger"></span>
 			</div>
-			<!-- </div> -->
-            <!--If logged in, display message, else display login button-->
+            <!--If logged in, display Logout, else display Login button-->
             <div id="login-div">
                 {% if 'username' not in login %}
                 <a href="{{url_for('login')}}" class="buttons login-button">Login</a>
@@ -61,7 +57,7 @@
         <section class="page-heading">
             <h1>Add a new item</h1>
         </section>
-
+        <!--Form functions mostly the same as add category form, except for additional category selection-->
         <section class="add-item">
             <form class="add-form" action="{{url_for('addItem', category_id=category.id)}}" method="post">
 
@@ -77,6 +73,7 @@
                 <label for="catSelect">Choose category:</label><br>
                 <select class="category-select" name="cat-name" id="catSelect">
                     <!--For loop to show all available categories-->
+                    <!--Categories in dropdown list. Shown value is category where user clicked add item button-->
                     {% for cat in categories %}
                         {% if cat.name == category.name %}
                         <option selected value="{{cat.id}}">{{cat.name}}</option>

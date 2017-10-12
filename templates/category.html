@@ -21,20 +21,16 @@
 
     <body>
         <header class="main-header">
-            <!--Constant-->
-            <!--Page heading-->
+            <!--Page logo-->
             <img class="logo" src="{{url_for('static', filename='logo.png')}}">
-            <!-- <h1 class="main-heading">Item Catalog</h1> -->
         </header>
 
         <section class="navbar">
-            <!-- <div id="page-heading"> -->
-				<!--Burger menu icon. Placed inside div to be able to center icon-->
+			<!--Burger menu icon. Placed inside div to be able to center icon-->
 			<div class="menu-button">
 				<span onclick="openNav()" class="glyphicon glyphicon-menu-hamburger"></span>
 			</div>
-			<!-- </div> -->
-            <!--If logged in, display message, else display login button-->
+            <!--If logged in, display Logout, else display Login button-->
             <div id="login-div">
                 {% if 'username' not in login %}
                 <a href="{{url_for('login')}}" class="buttons login-button">Login</a>
@@ -62,16 +58,13 @@
             {% endif %}
         </section>
 
+        <!--Display all the items in the category-->
         <section id="main-body" class="category-section">
-            <!--The divs will be placed in a for loop that loops through
-                categories in the database -->
                 {% for item in itemList %}
                 <a href="{{url_for('viewItem', category_id=category.id, item_id=item.id)}}" class="category">
                     <figure class="category-figure">
-                        <!--Picture and captions will change-->
                         <picture class="category-picture">
-                            <!--Alt needs to have -->
-                            <img class="category-poster" src="{{item.url}}" alt="">
+                            <img class="category-poster" src="{{item.url}}" alt="{{item.name}} picture">
                         </picture>
 
                         <figcaption class="category-caption">
@@ -88,13 +81,13 @@
                     Add Item
                 </a>
             </div>
+            <!--If logged in as admin, display edit and delete category buttons-->
             {% if admin==True %}
             <div class="button-container">
                 <a href="{{url_for('editCategory', category_id=category.id)}}" class="actionButton buttons">
                     Edit Category
                 </a>
             </div>
-
             <div class="button-container">
                 <a href="{{url_for('deleteCategory', category_id=category.id)}}" class="actionButton buttons">
                     Delete Category

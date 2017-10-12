@@ -21,20 +21,16 @@
 
     <body>
         <header class="main-header">
-            <!--Constant-->
-            <!--Page heading-->
+            <!--Page logo-->
             <img class="logo" src="{{url_for('static', filename='logo.png')}}">
-            <!-- <h1 class="main-heading">Item Catalog</h1> -->
         </header>
 
         <section class="navbar">
-            <!-- <div id="page-heading"> -->
-				<!--Burger menu icon. Placed inside div to be able to center icon-->
+			<!--Burger menu icon. Placed inside div to be able to center icon-->
 			<div class="menu-button">
 				<span onclick="openNav()" class="glyphicon glyphicon-menu-hamburger"></span>
 			</div>
-			<!-- </div> -->
-            <!--If logged in, display message, else display login button-->
+            <!--If logged in, display Logout, else display Login button-->
             <div id="login-div">
                 {% if 'username' not in login %}
                 <a href="{{url_for('login')}}" class="buttons login-button">Login</a>
@@ -61,7 +57,7 @@
         <section class="page-heading">
             <h1>Edit {{item.name}}</h1>
         </section>
-
+        <!--Same form as add item, only with pre populated fields-->
         <section class="add-item">
             <form class="add-form" action="{{url_for('editItem', category_id=category.id, item_id=item.id)}}" method="post">
 
@@ -76,7 +72,6 @@
 
                 <label for="catSelect">Choose category:</label><br>
                 <select class="category-select" name="cat-name" id="catSelect" value="{{category.name}}">
-                    <!--For loop to show all available categories-->
                     {% for cat in categories %}<br>
                         {% if cat.name == category.name %}
                         <option selected value="{{cat.id}}">{{cat.name}}</option>

@@ -20,20 +20,16 @@
 
     <body>
         <header class="main-header">
-            <!--Constant-->
-            <!--Page heading-->
+            <!--Page logo-->
             <img class="logo" src="{{url_for('static', filename='logo.png')}}">
-            <!-- <h1 class="main-heading">Item Catalog</h1> -->
         </header>
 
         <section class="navbar">
-            <!-- <div id="page-heading"> -->
-				<!--Burger menu icon. Placed inside div to be able to center icon-->
+		    <!--Burger menu icon. Placed inside div to be able to center icon-->
 			<div class="menu-button">
 				<span onclick="openNav()" class="glyphicon glyphicon-menu-hamburger"></span>
 			</div>
-			<!-- </div> -->
-            <!--If logged in, display message, else display login button-->
+            <!--If logged in, display Logout, else display Login button-->
             <div id="login-div">
                 {% if 'username' not in login %}
                 <a href="{{url_for('login')}}" class="buttons login-button">Login</a>
@@ -57,6 +53,7 @@
         {% endif %}
         </section>
 
+        <!--Print flash message when user successfully logged out-->
         <div class="flashMessages">
             {% with messages = get_flashed_messages() %}
                 {% if messages %}
@@ -66,18 +63,13 @@
                 {% endif %}
             {% endwith %}
         </div>
-
+        <!--Print all the categories in the database-->
         <section id="main-body" class="category-section">
-
-            <!--The divs will be placed in a for loop that loops through
-                categories in the database -->
-            <!--Variable length-->
             {% for item in catalog_items %}
             <a href="{{url_for('viewCategory', category_id=item.id)}}" class="category">
                 <figure class="category-figure">
-                    <!--Picture and captions will change-->
                     <picture class="category-picture">
-                        <img class="category-poster" src="{{item.url}}" alt="">
+                        <img class="category-poster" src="{{item.url}}" alt="{{item.name}} picture">
                     </picture>
 
                     <figcaption class="category-caption">
@@ -87,7 +79,7 @@
             </a>
             {% endfor %}
         </section>
-
+        <!--Buttons only render when admin is logged in-->
         <section class="addSection">
             {% if admin==True %}
             <a href="{{url_for('addCategory')}}" class="addButton buttons">
@@ -100,7 +92,6 @@
             {% endif %}
         </section>
 
-        <!--Will stay the same across all pages-->
         <footer class="main-footer">
             <p>+27 151 3535</p>
             <p>wicwebdevelopment@gmail.com</p>

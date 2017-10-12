@@ -22,20 +22,16 @@
 
     <body>
         <header class="main-header">
-            <!--Constant-->
-            <!--Page heading-->
+            <!--Page logo-->
             <img class="logo" src="{{url_for('static', filename='logo.png')}}">
-            <!-- <h1 class="main-heading">Item Catalog</h1> -->
         </header>
 
         <section class="navbar">
-            <!-- <div id="page-heading"> -->
-				<!--Burger menu icon. Placed inside div to be able to center icon-->
+			<!--Burger menu icon. Placed inside div to be able to center icon-->
 			<div class="menu-button">
 				<span onclick="openNav()" class="glyphicon glyphicon-menu-hamburger"></span>
 			</div>
-			<!-- </div> -->
-            <!--If logged in, display message, else display login button-->
+            <!--If logged in, display Logout, else display Login button-->
             <div id="login-div">
                 {% if 'username' not in login %}
                 <a href="{{url_for('login')}}" class="buttons login-button">Login</a>
@@ -59,27 +55,23 @@
             {% endif %}
         </section>
 
+        <!--Display item pic and info-->
         <section class="item-container">
-
             <div class="cards item">
                 <picture class="item-image">
-                    <img class="item-picture" src="{{item.url}}" alt="">
-
+                    <img class="item-picture" src="{{item.url}}" alt="{{item.name}} picture">
                 </picture>
 
                 <div class="name-container">
                     <div class="item-name">
                         <p class="iname">{{item.name}}</p>
                     </div>
-
                     <div class="item-description">
                         <p class="description">{{item.description}}</p>
                     </div>
                 </div>
             </div>
-
-            <!--This should have an if statement to either display login
-                message or edit and delete buttons -->
+            <!--Render buttons based on user-->
             <div class="action-buttons">
                 {% if userAccess == True %}
                 <div class="ibutton-container">
